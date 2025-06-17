@@ -3,7 +3,7 @@ package br.com.rafaelaranda.task_manager.user.vo;
 public class Email {
     private final String value;
 
-    private Email(String value) {
+    protected Email(String value) {
         this.value = value;
     }
 
