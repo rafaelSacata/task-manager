@@ -27,14 +27,14 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        LOGGER.info("Searching user with email: {}", email);
+        LOGGER.info("# Searching user with email: {}", email);
         Email emailVO = Email.of(email);
         UserEntity userEntity = userRepository.findByEmail(emailVO);
         if (userEntity == null) {
-            LOGGER.error("User not found with email: {}", email);
+            LOGGER.error("# User NOT FOUND with email: {}", email);
             throw new UsernameNotFoundException("User not found with email: " + email);
         }
-        LOGGER.info("User found! [UserEmail: {}]", userEntity.getEmail());
+        LOGGER.info("# User found! => [ USEREMAIL: {} ]", userEntity.getEmail().getValue());
         List<SimpleGrantedAuthority> authorities = userEntity.getRole() != null
                 ? List.of(new SimpleGrantedAuthority("ROLE_" + userEntity.getRole().name()))
                 : Collections.emptyList();

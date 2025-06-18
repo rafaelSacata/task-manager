@@ -2,6 +2,7 @@ package br.com.rafaelaranda.task_manager.user.controller;
 
 import br.com.rafaelaranda.task_manager.config.security.service.TokenService;
 import br.com.rafaelaranda.task_manager.user.dto.AuthenticationDTO;
+import br.com.rafaelaranda.task_manager.user.dto.LoginRequestDTO;
 import br.com.rafaelaranda.task_manager.user.dto.LoginResponseDTO;
 import br.com.rafaelaranda.task_manager.user.entity.UserEntity;
 import br.com.rafaelaranda.task_manager.user.enums.Role;
@@ -46,34 +47,55 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponseDTO> login(@RequestBody @Valid LoginDTO data) {
-        LOGGER.info("# Receiving login request from user: {}", data.email());
+    public ResponseEntity<LoginResponseDTO> login(@RequestBody @Valid LoginRequestDTO loginRequestDTO) {
+
+        LOGGER.info("# Receiving login request from user: {}", loginRequestDTO.email());
+
         try {
-            var auth = authenticationManager.authenticate(
+            final var auth = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
-                            data.email(),
-                            data.password()
+                            loginRequestDTO.email(),
+                            loginRequestDTO.password()
                     )
             );
-            var principal = auth.getPrincipal();
-            LOGGER.info("# Principal type: {}", principal.getClass().getName());
-            var user = (UserDetails) principal;
-            var token = tokenService.generateToken(user);
-            LOGGER.info("# Generated token: {}", token);
+
+            final var token = tokenService.generateToken(
+                    (UserDetails) auth.getPrincipal()
+            );
+
+            LOGGER.info("# Token was generated successfully!");
+
             return ResponseEntity.ok(new LoginResponseDTO(token));
+
         } catch (AuthenticationException e) {
-            LOGGER.error("Authentication failed: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new LoginResponseDTO("Invalid credentials"));
+
+            LOGGER.error("# Authentication failed: {}", e.getMessage());
+
+            return ResponseEntity.status(
+                    HttpStatus.UNAUTHORIZED
+            ).body(new LoginResponseDTO("Invalid credentials"));
+
         } catch (Exception e) {
-            LOGGER.error("Unexpected error: {}", e.getMessage(), e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new LoginResponseDTO("Internal error: " + e.getMessage()));
+
+            LOGGER.error("# Unexpected error: {}", e.getMessage(), e);
+
+            return ResponseEntity.status(
+                    HttpStatus.INTERNAL_SERVER_ERROR
+            ).body(new LoginResponseDTO("Internal error: " + e.getMessage()));
+
         }
     }
 
     @PostMapping("/register")
-    public ResponseEntity<UserEntity> register(@RequestBody @Valid AuthenticationDTO data) {
-        UserEntity newUser = userMapper.toEntity(data);
+    public ResponseEntity<UserEntity> register(@RequestBody @Valid AuthenticationDTO authenticationDTO) {
+
+        LOGGER.info("# Receiving registration request from {} with email {}", authenticationDTO.name(), authenticationDTO.email());
+
+        UserEntity newUser = userMapper.toEntity(authenticationDTO);
+
         newUser.setRole(Role.USER);
+
+        LOGGER.info("# Defining default role for {} with email {}", authenticationDTO.name(), authenticationDTO.email());
 
         UserEntity savedUser = userService.saveNewUser(newUser);
 
