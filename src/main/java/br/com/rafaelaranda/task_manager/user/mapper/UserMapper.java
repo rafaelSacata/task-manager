@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 import br.com.rafaelaranda.task_manager.user.dto.AuthenticationDTO;
 import br.com.rafaelaranda.task_manager.user.entity.UserEntity;
 
-@Component
 @Mapper(componentModel = "spring")
 public interface UserMapper {
 

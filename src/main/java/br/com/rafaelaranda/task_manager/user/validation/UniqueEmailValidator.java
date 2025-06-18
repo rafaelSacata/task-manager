@@ -5,8 +5,10 @@ import br.com.rafaelaranda.task_manager.user.vo.Email;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-public class UniqueEmailValidator implements ConstraintValidator<UniqueEmail, Email> {
+@Component
+public class UniqueEmailValidator implements ConstraintValidator<UniqueEmail, String> {
 
     @Autowired
     private UserService userService;
@@ -17,10 +19,11 @@ public class UniqueEmailValidator implements ConstraintValidator<UniqueEmail, Em
     }
 
     @Override
-    public boolean isValid(Email email, ConstraintValidatorContext context) {
-        if (email == null) {
+    public boolean isValid(String email, ConstraintValidatorContext context) {
+        if (email == null || email.isBlank()) {
             return true;
         }
-        return !userService.existsByEmail(email);
+
+        return !userService.existsByEmail(Email.of(email));
     }
 }

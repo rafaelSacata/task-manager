@@ -12,5 +12,6 @@ import br.com.rafaelaranda.task_manager.user.entity.UserEntity;
 @Repository
 public interface UserRepository extends JpaRepository<UserEntity, UUID>{
     UserDetails findOneByEmail(String userEmail);
+    UserEntity findByEmail(Email userEmail);
     boolean existsByEmail(Email email);
 }

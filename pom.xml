@@ -13,7 +13,10 @@
 	<artifactId>task-manager</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>task-manager</name>
-	<description>Projeto de gerenciamento de tarefas desenvolvido como resposta ao desafio de recrutamento da Nexum</description>
+	<description>
+		[PT-BR]_Projeto de gerenciamento de tarefas desenvolvido como resposta ao desafio de recrutamento da Nexum
+		[EN]_Task management project developed in response to Nexum's recruitment challenge
+	</description>
 	<url />
 	<licenses>
 		<license />
@@ -43,7 +46,6 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
@@ -71,9 +73,8 @@
 			<version>1.5.5.Final</version>
 		</dependency>
 		<dependency>
-			<groupId>de.mkammerer</groupId>
-			<artifactId>argon2-jvm</artifactId>
-			<version>2.11</version>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-crypto</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -100,7 +101,6 @@
 			</resource>
 		</resources>
 		<plugins>
-			<!-- Plugin do compilador Java -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -117,8 +117,6 @@
 					</annotationProcessorPaths>
 				</configuration>
 			</plugin>
-
-			<!-- Aqui está o pulo do gato: plugin Spring Boot executável -->
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>

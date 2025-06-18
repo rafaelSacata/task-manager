@@ -4,6 +4,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import jakarta.validation.ConstraintViolation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +22,8 @@ import jakarta.servlet.http.HttpServletRequest;
 
 @RestControllerAdvice
 public class ValidationExceptionHandler {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ValidationExceptionHandler.class);
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ValidationErrorDTO> handleValidationErrors(
@@ -49,7 +54,7 @@ public class ValidationExceptionHandler {
     ) {
         List<String> errors = ex.getConstraintViolations()
                 .stream()
-                .map(violation -> violation.getMessage())
+                .map(ConstraintViolation::getMessage)
                 .collect(Collectors.toList());
 
         ValidationErrorDTO errorDTO = new ValidationErrorDTO(
@@ -68,10 +73,10 @@ public class ValidationExceptionHandler {
             DataIntegrityViolationException ex,
             HttpServletRequest request
     ) {
-        String errorMessage = "Os dados fornecidos entram em conflito com registros existentes.";
+        String errorMessage = "The provided data conflicted with existing records.";
 
         if (ex.getCause() instanceof org.hibernate.exception.ConstraintViolationException) {
-            errorMessage = "Já existe um registro com os dados informados (ex: e-mail já cadastrado).";
+            errorMessage = "There is already a record with the data provided (e.g. email already registered).";
         }
 
         ValidationErrorDTO errorDTO = new ValidationErrorDTO(
@@ -83,6 +88,22 @@ public class ValidationExceptionHandler {
         );
 
         return ResponseEntity.status(HttpStatus.CONFLICT).body(errorDTO);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ValidationErrorDTO> handleGenericException(
+            Exception ex,
+            HttpServletRequest request
+    ) {
+        LOGGER.error("Unexpected error: {}", ex.getMessage(), ex);
+        ValidationErrorDTO errorDTO = new ValidationErrorDTO(
+                LocalDateTime.now(),
+                HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                "Internal Server Error",
+                List.of(ex.getMessage()),
+                request.getRequestURI()
+        );
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorDTO);
     }
 }
 

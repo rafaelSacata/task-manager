@@ -2,12 +2,12 @@ package br.com.rafaelaranda.task_manager.user.vo;
 
 import java.util.Objects;
 
-import de.mkammerer.argon2.Argon2;
-import de.mkammerer.argon2.Argon2Factory;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 public class Password {
 
-    private static final Argon2 ARGON2 = Argon2Factory.create();
+    private static final PasswordEncoder ENCODER = new BCryptPasswordEncoder();
 
     private final String hashedPassword;
 
@@ -20,12 +20,12 @@ public class Password {
             throw new IllegalArgumentException("The password cannot be null or blank");
         }
 
-        String hash = ARGON2.hash(2, 65536, 1, plainTextPassword.toCharArray());
+        String hash = ENCODER.encode(plainTextPassword);
         return new Password(hash);
     }
 
     public boolean matches(String plainTextPassword) {
-        return ARGON2.verify(this.hashedPassword, plainTextPassword.toCharArray());
+        return ENCODER.matches(plainTextPassword, this.hashedPassword);
     }
 
     public String getHashed() {
@@ -49,5 +49,3 @@ public class Password {
         return Objects.hash(hashedPassword);
     }
 }
-
-

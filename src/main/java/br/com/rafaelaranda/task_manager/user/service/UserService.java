@@ -16,24 +16,9 @@ import br.com.rafaelaranda.task_manager.user.repository.UserRepository;
 public class UserService {
     
     private final UserRepository userRepository;
-    private final UserMapper userMapper;
 
-    public UserService(UserRepository userRepository, UserMapper userMapper) {
+    public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.userMapper = userMapper;
-    }
-
-    public List<UserEntity> getAllUser() {
-        return userRepository.findAll();
-    }
-
-    public UserEntity createUser(AuthenticationDTO authenticationDTO) {
-        UserEntity user = userMapper.toEntity(authenticationDTO);
-        return userRepository.save(user);
-    }
-
-    public UserDetails findOneByUserEmail(String userEmail) {
-        return userRepository.findOneByEmail(userEmail);
     }
 
     public boolean existsByEmail(Email userEmail) {
