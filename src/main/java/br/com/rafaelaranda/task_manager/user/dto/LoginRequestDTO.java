@@ -1,4 +1,4 @@
-package br.com.rafaelaranda.task_manager.user.controller;
+package br.com.rafaelaranda.task_manager.user.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
