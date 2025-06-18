@@ -40,8 +40,7 @@ public class Password {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Password)) return false;
-        Password password = (Password) o;
+        if (!(o instanceof Password password)) return false;
         return Objects.equals(hashedPassword, password.hashedPassword);
     }
 

@@ -1,5 +1,7 @@
 package br.com.rafaelaranda.task_manager.user.vo;
 
+import java.util.Objects;
+
 public class Email {
     private final String value;
 
@@ -24,28 +26,14 @@ public class Email {
     }
 
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((value == null) ? 0 : value.hashCode());
-        return result;
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Email email = (Email) o;
+        return Objects.equals(value, email.value);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        Email other = (Email) obj;
-        if (value == null) {
-            if (other.value != null)
-                return false;
-        } else if (!value.equals(other.value))
-            return false;
-        return true;
+    public int hashCode() {
+        return Objects.hashCode(value);
     }
-
 }

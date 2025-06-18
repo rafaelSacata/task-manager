@@ -2,18 +2,20 @@ package br.com.rafaelaranda.task_manager.user.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.springframework.stereotype.Component;
 
-import br.com.rafaelaranda.task_manager.user.dto.UserDTO;
+import br.com.rafaelaranda.task_manager.user.dto.AuthenticationDTO;
 import br.com.rafaelaranda.task_manager.user.entity.UserEntity;
 
+@Component
 @Mapper(componentModel = "spring")
 public interface UserMapper {
 
     @Mapping(target = "email", expression = "java(Email.of(dto.email()))")
     @Mapping(target = "password", expression = "java(br.com.rafaelaranda.task_manager.user.vo.Password.fromPlainText(dto.password()))")
-    UserEntity toEntity(UserDTO dto);
+    UserEntity toEntity(AuthenticationDTO dto);
 
     @Mapping(target = "email", source = "email.value")
     @Mapping(target = "password", ignore = true)
-    UserDTO toDTO(UserEntity entity);
+    AuthenticationDTO toDTO(UserEntity entity);
 }

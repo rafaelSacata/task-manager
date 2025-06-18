@@ -4,16 +4,14 @@ import java.util.List;
 import java.util.UUID;
 
 import br.com.rafaelaranda.task_manager.task.entity.TaskEntity;
+import br.com.rafaelaranda.task_manager.user.enums.Role;
 import br.com.rafaelaranda.task_manager.user.vo.Email;
+import br.com.rafaelaranda.task_manager.user.vo.EmailConverter;
 import br.com.rafaelaranda.task_manager.user.vo.Password;
 import br.com.rafaelaranda.task_manager.user.vo.PasswordConverter;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Convert;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
+
+import static jakarta.persistence.EnumType.STRING;
 
 @Entity
 public class UserEntity {
@@ -26,6 +24,8 @@ public class UserEntity {
     @Column(length = 200)
     private String name;
 
+    @Convert(converter = EmailConverter.class)
+    @Column(unique = true, nullable = false)
     private Email email;
 
     @Convert(converter = PasswordConverter.class)
@@ -33,6 +33,9 @@ public class UserEntity {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TaskEntity> tasks;
+
+    @Enumerated(STRING)
+    private Role role;
 
     public String getName() {
         return name;
@@ -70,5 +73,11 @@ public class UserEntity {
         return userId;
     }
 
-    
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
 }

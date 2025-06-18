@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -60,6 +61,28 @@ public class ValidationExceptionHandler {
         );
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDTO);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ValidationErrorDTO> handleDataIntegrityViolation(
+            DataIntegrityViolationException ex,
+            HttpServletRequest request
+    ) {
+        String errorMessage = "Os dados fornecidos entram em conflito com registros existentes.";
+
+        if (ex.getCause() instanceof org.hibernate.exception.ConstraintViolationException) {
+            errorMessage = "Já existe um registro com os dados informados (ex: e-mail já cadastrado).";
+        }
+
+        ValidationErrorDTO errorDTO = new ValidationErrorDTO(
+                LocalDateTime.now(),
+                HttpStatus.CONFLICT.value(),
+                "Data Conflict",
+                List.of(errorMessage),
+                request.getRequestURI()
+        );
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(errorDTO);
     }
 }
 

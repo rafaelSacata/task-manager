@@ -1,7 +1,10 @@
 spring:
   application:
     name: task-manager
-
+  security:
+    user:
+      name: "rafael_pastel"
+      password: "pasteldequeijo123"
   datasource:
     url: ${SPRING_DATASOURCE_URL}
     username: ${SPRING_DATASOURCE_USERNAME}
@@ -13,3 +16,10 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+  logging:
+    level:
+      org.springframework.security: DEBUG
+api:
+  security:
+    token:
+      secret: ${JWT_SECRET:tomatos-with-potatos-with-cheese}
