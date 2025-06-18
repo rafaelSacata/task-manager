@@ -34,7 +34,7 @@ public class CustomUserDetailsService implements UserDetailsService {
             LOGGER.error("# User NOT FOUND with email: {}", email);
             throw new UsernameNotFoundException("User not found with email: " + email);
         }
-        LOGGER.info("# User found! => [ USEREMAIL: {} ]", userEntity.getEmail().getValue());
+        LOGGER.info("# User found! => [ USEREMAIL: {} ]", userEntity.getEmail());
         List<SimpleGrantedAuthority> authorities = userEntity.getRole() != null
                 ? List.of(new SimpleGrantedAuthority("ROLE_" + userEntity.getRole().name()))
                 : Collections.emptyList();
