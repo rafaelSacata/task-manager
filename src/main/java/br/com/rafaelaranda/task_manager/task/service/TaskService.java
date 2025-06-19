@@ -97,7 +97,12 @@ public class TaskService {
     }
 
     private UserEntity getAuthenticatedUser() {
-        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || authentication.getPrincipal() == null || authentication.getPrincipal().equals("anonymousUser")) {
+            LOGGER.error("No authenticated user found");
+            throw new SecurityException("No authenticated user found");
+        }
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         String email = userDetails.getUsername();
         UserEntity user = userRepository.findByEmail(Email.of(email));
         if (user == null) {
