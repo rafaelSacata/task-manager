@@ -1,12 +1,9 @@
 package br.com.rafaelaranda.task_manager.task.dto;
 
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.AssertTrue;
 
 public record TaskUpdateDTO(
-        @NotBlank(message = "Title is required")
-        String title,
-        @NotBlank(message = "Description is required")
-        String description,
+        @AssertTrue(message = "Task must be completed")
         boolean completed
 ) {
 }

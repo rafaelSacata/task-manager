@@ -52,16 +52,11 @@ public class TaskService {
             LOGGER.warn("User {} attempted to update task {} owned by another user", user.getEmail(), id);
             throw new SecurityException("Access denied: Task does not belong to user");
         }
-        task.setTitle(dto.title());
-        task.setDescription(dto.description());
         if (dto.completed() && !task.isCompleted()) {
             task.setCompleted(true);
             task.setCompletionDate(LocalDateTime.now());
-        } else if (!dto.completed() && task.isCompleted()) {
-            task.setCompleted(false);
-            task.setCompletionDate(null);
+            task = taskRepository.save(task);
         }
-        task = taskRepository.save(task);
         return toResponseDTO(task);
     }
 
