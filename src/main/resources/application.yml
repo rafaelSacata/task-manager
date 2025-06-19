@@ -14,9 +14,9 @@ spring:
 logging:
   level:
     org.springframework: DEBUG
-    org.hibernate: DEBUG
-    br.com.rafaelaranda.task_manager: DEBUG
-    org.springframework.security: TRACE
+#    org.hibernate: DEBUG
+    br.com.rafaelaranda.task_manager: INFO
+#    org.springframework.security: TRACE
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} %-5level [%-35.35thread] [%-36.36logger{36}] : %msg%n"
 api:
