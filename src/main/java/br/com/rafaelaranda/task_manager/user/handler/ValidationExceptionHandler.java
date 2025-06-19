@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -104,6 +105,36 @@ public class ValidationExceptionHandler {
                 request.getRequestURI()
         );
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorDTO);
+    }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<ValidationErrorDTO> handleEntityNotFound(
+            EntityNotFoundException ex,
+            HttpServletRequest request
+    ) {
+        ValidationErrorDTO errorDTO = new ValidationErrorDTO(
+                LocalDateTime.now(),
+                HttpStatus.NOT_FOUND.value(),
+                "Not Found",
+                List.of(ex.getMessage()),
+                request.getRequestURI()
+        );
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorDTO);
+    }
+
+    @ExceptionHandler(SecurityException.class)
+    public ResponseEntity<ValidationErrorDTO> handleSecurityException(
+            SecurityException ex,
+            HttpServletRequest request
+    ) {
+        ValidationErrorDTO errorDTO = new ValidationErrorDTO(
+                LocalDateTime.now(),
+                HttpStatus.FORBIDDEN.value(),
+                "Access Denied",
+                List.of(ex.getMessage()),
+                request.getRequestURI()
+        );
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorDTO);
     }
 }
 

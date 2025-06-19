@@ -14,6 +14,7 @@ import jakarta.persistence.*;
 import static jakarta.persistence.EnumType.STRING;
 
 @Entity
+@Table(name = "users")
 public class UserEntity {
 
     @Id
