@@ -48,6 +48,7 @@ public class SecurityConfiguration {
                         authorize
                                 .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
+                                .requestMatchers("/api/auth/**", "/health").permitAll()
                                 .requestMatchers("/error").permitAll()
                                 .requestMatchers("/tasks/**").authenticated()
                                 .anyRequest().authenticated())
