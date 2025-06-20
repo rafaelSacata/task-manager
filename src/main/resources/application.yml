@@ -22,4 +22,6 @@ logging:
 api:
   security:
     token:
-      secret: ${JWT_SECRET:tomatos-with-potatos-with-cheese}
+      secret: ${JWT_SECRET}
+server:
+  port: ${SERVER_PORT:8080}
