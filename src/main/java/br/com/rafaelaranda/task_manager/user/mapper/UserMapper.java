@@ -2,7 +2,6 @@ package br.com.rafaelaranda.task_manager.user.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.springframework.stereotype.Component;
 
 import br.com.rafaelaranda.task_manager.user.dto.AuthenticationDTO;
 import br.com.rafaelaranda.task_manager.user.entity.UserEntity;

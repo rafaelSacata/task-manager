@@ -1,4 +1,4 @@
-package br.com.rafaelaranda.task_manager.user.handler;
+package br.com.rafaelaranda.task_manager.handler;
 
 import java.time.LocalDateTime;
 import java.util.List;
