@@ -1,14 +1,17 @@
 package br.com.rafaelaranda.task_manager.task.dto;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
+
+import br.com.rafaelaranda.task_manager.reminder.enums.ReminderInterval;
 
 public record TaskResponseDTO(
-        UUID taskId,
+        String taskId,
         String title,
         String description,
         boolean completed,
         LocalDateTime creationDate,
-        LocalDateTime completionDate
+        LocalDateTime completionDate,
+        boolean hasReminders,
+        ReminderInterval reminderInterval
 ) {
 }

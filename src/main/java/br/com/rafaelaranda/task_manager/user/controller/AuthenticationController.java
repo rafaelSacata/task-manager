@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -37,9 +38,9 @@ public class AuthenticationController {
     private final UserMapper userMapper;
 
     public AuthenticationController(AuthenticationManager authenticationManager,
-                                    UserService userService,
-                                    TokenService tokenService,
-                                    UserMapper userMapper) {
+            UserService userService,
+            TokenService tokenService,
+            UserMapper userMapper) {
         this.authenticationManager = authenticationManager;
         this.userService = userService;
         this.tokenService = tokenService;
@@ -55,13 +56,10 @@ public class AuthenticationController {
             final var auth = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             loginRequestDTO.email(),
-                            loginRequestDTO.password()
-                    )
-            );
+                            loginRequestDTO.password()));
 
             final var token = tokenService.generateToken(
-                    (UserDetails) auth.getPrincipal()
-            );
+                    (UserDetails) auth.getPrincipal());
 
             LOGGER.info("# Token was generated successfully!");
 
@@ -72,35 +70,42 @@ public class AuthenticationController {
             LOGGER.error("# Authentication failed: {}", e.getMessage());
 
             return ResponseEntity.status(
-                    HttpStatus.UNAUTHORIZED
-            ).body(new LoginResponseDTO("Invalid credentials"));
+                    HttpStatus.UNAUTHORIZED).body(new LoginResponseDTO("Invalid credentials"));
 
         } catch (Exception e) {
 
             LOGGER.error("# Unexpected error: {}", e.getMessage(), e);
 
             return ResponseEntity.status(
-                    HttpStatus.INTERNAL_SERVER_ERROR
-            ).body(new LoginResponseDTO("Internal error: " + e.getMessage()));
+                    HttpStatus.INTERNAL_SERVER_ERROR).body(new LoginResponseDTO("Internal error: " + e.getMessage()));
 
         }
     }
 
     @PostMapping("/register")
-    public ResponseEntity<UserEntity> register(@RequestBody @Valid AuthenticationDTO authenticationDTO) {
+    public ResponseEntity<Void> register(@RequestBody @Valid AuthenticationDTO authenticationDTO) {
 
-        LOGGER.info("# Receiving registration request from {} with email {}", authenticationDTO.name(), authenticationDTO.email());
+        LOGGER.info("# Receiving registration request from {} with email {}", authenticationDTO.name(),
+                authenticationDTO.email());
 
         UserEntity newUser = userMapper.toEntity(authenticationDTO);
-
         newUser.setRole(Role.USER);
 
-        LOGGER.info("# Defining default role for {} with email {}", authenticationDTO.name(), authenticationDTO.email());
+        LOGGER.info("# Defining default role for {} with email {}", authenticationDTO.name(),
+                authenticationDTO.email());
 
-        UserEntity savedUser = userService.saveNewUser(newUser);
+        userService.saveNewUser(newUser);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(savedUser);
+                .build();
     }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout() {
+        LOGGER.info("Received request to logout");
+        SecurityContextHolder.clearContext();
+        return ResponseEntity.ok().build();
+    }
+
 }

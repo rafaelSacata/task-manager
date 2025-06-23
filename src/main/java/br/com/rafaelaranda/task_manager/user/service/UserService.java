@@ -1,17 +1,16 @@
 package br.com.rafaelaranda.task_manager.user.service;
 
-import java.util.List;
-
-import br.com.rafaelaranda.task_manager.user.dto.AuthenticationDTO;
 import br.com.rafaelaranda.task_manager.user.enums.Role;
 import br.com.rafaelaranda.task_manager.user.vo.Email;
+import jakarta.persistence.EntityNotFoundException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import br.com.rafaelaranda.task_manager.user.entity.UserEntity;
-import br.com.rafaelaranda.task_manager.user.mapper.UserMapper;
 import br.com.rafaelaranda.task_manager.user.repository.UserRepository;
 
 @Service
@@ -38,5 +37,21 @@ public class UserService {
         }
         LOGGER.info("# User created successfully!");
         return userRepository.save(user);
+    }
+
+    public UserEntity getAuthenticatedUser() {
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || authentication.getPrincipal() == null || authentication.getPrincipal().equals("anonymousUser")) {
+            LOGGER.error("No authenticated user found");
+            throw new SecurityException("No authenticated user found");
+        }
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String email = userDetails.getUsername();
+        UserEntity user = userRepository.findByEmail(Email.of(email));
+        if (user == null) {
+            LOGGER.error("User not found: {}", email);
+            throw new EntityNotFoundException("User not found: " + email);
+        }
+        return user;
     }
 }

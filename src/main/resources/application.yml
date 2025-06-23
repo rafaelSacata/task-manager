@@ -1,4 +1,11 @@
 spring:
+  profiles:
+    active: dev
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
   application:
     name: task-manager
   datasource:
@@ -14,14 +21,41 @@ spring:
 logging:
   level:
     org.springframework: DEBUG
-#    org.hibernate: DEBUG
     br.com.rafaelaranda.task_manager: INFO
-#    org.springframework.security: TRACE
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} %-5level [%-35.35thread] [%-36.36logger{36}] : %msg%n"
 api:
   security:
     token:
       secret: ${JWT_SECRET}
+server:
+  port: ${SERVER_PORT:8080}
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+  application:
+    name: task-manager
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/taskdb}
+    username: ${SPRING_DATASOURCE_USERNAME:taskuser}
+    password: ${SPRING_DATASOURCE_PASSWORD:123456}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+logging:
+  level:
+    org.springframework: DEBUG
+    br.com.rafaelaranda.task_manager: INFO
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} %-5level [%-35.35thread] [%-36.36logger{36}] : %msg%n"
+api:
+  security:
+    token:
+      secret: ${JWT_SECRET:tomatos-with-potatos-with-cheese}
 server:
   port: ${SERVER_PORT:8080}

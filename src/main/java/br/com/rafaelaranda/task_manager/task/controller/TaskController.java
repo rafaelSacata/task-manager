@@ -1,5 +1,6 @@
 package br.com.rafaelaranda.task_manager.task.controller;
 
+import br.com.rafaelaranda.task_manager.task.dto.TaskConcludeDTO;
 import br.com.rafaelaranda.task_manager.task.dto.TaskCreateDTO;
 import br.com.rafaelaranda.task_manager.task.dto.TaskResponseDTO;
 import br.com.rafaelaranda.task_manager.task.dto.TaskUpdateDTO;
@@ -31,10 +32,17 @@ public class TaskController {
         return ResponseEntity.created(URI.create("/tasks/" + response.taskId())).body(response);
     }
 
-    @PutMapping("/{taskId}")
+    @PatchMapping("/{taskId}")
     public ResponseEntity<TaskResponseDTO> updateTask(@PathVariable UUID taskId, @Valid @RequestBody TaskUpdateDTO dto) {
         LOGGER.info("Received request to update task: {}", taskId);
         TaskResponseDTO response = taskService.updateTask(taskId, dto);
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/{taskId}")
+    public ResponseEntity<TaskResponseDTO> conludeTask(@PathVariable UUID taskId, @Valid @RequestBody TaskConcludeDTO dto) {
+        LOGGER.info("Received request to conclude task: {}", taskId);
+        TaskResponseDTO response = taskService.concludeTask(taskId, dto);
         return ResponseEntity.ok(response);
     }
 
@@ -56,6 +64,13 @@ public class TaskController {
     public ResponseEntity<List<TaskResponseDTO>> getAllTasks() {
         LOGGER.info("Received request to get all tasks");
         List<TaskResponseDTO> tasks = taskService.getAllTasks();
+        return ResponseEntity.ok(tasks);
+    }
+
+    @GetMapping("/reminders")
+    public ResponseEntity<List<TaskResponseDTO>> getPendingReminders() {
+        LOGGER.info("Received request to get pending reminders");
+        List<TaskResponseDTO> tasks = taskService.getPendingReminders();
         return ResponseEntity.ok(tasks);
     }
 }

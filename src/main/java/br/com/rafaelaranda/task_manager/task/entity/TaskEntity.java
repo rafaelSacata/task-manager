@@ -3,6 +3,7 @@ package br.com.rafaelaranda.task_manager.task.entity;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import br.com.rafaelaranda.task_manager.reminder.enums.ReminderInterval;
 import br.com.rafaelaranda.task_manager.user.entity.UserEntity;
 import jakarta.persistence.*;
 
@@ -33,6 +34,19 @@ public class TaskEntity {
 
     @Column(name = "completition_date", nullable = true)
     private LocalDateTime completionDate;
+
+    @Column(name = "completion_note", length = 200)
+    private String completionNote;
+
+    @Column(name = "has_reminders", nullable = false)
+    private boolean hasReminders;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "reminder_interval")
+    private ReminderInterval reminderInterval;
+
+    @Column(name = "last_reminder_sent")
+    private LocalDateTime lastReminderSent;
 
     @PrePersist
     public void prePersist() {
@@ -87,4 +101,27 @@ public class TaskEntity {
         this.completionDate = completionDate;
     }
 
+    public boolean isHasReminders() {
+        return hasReminders;
+    }
+
+    public void setHasReminders(boolean hasReminders) {
+        this.hasReminders = hasReminders;
+    }
+
+    public ReminderInterval getReminderInterval() {
+        return reminderInterval;
+    }
+
+    public void setReminderInterval(ReminderInterval reminderInterval) {
+        this.reminderInterval = reminderInterval;
+    }
+
+    public LocalDateTime getLastReminderSent() {
+        return lastReminderSent;
+    }
+
+    public void setLastReminderSent(LocalDateTime lastReminderSent) {
+        this.lastReminderSent = lastReminderSent;
+    }
 }
